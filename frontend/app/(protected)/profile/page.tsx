@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Settings as SettingsIcon, Bell, Lock, Globe, CreditCard } from "lucide-react";
+import { User, Settings as SettingsIcon, Bell, Lock, Globe, CreditCard, Sparkles } from "lucide-react";
 import { useSession } from "@/lib/auth/provider";
 
 export default function SettingsPage() {
@@ -83,6 +83,5 @@ export default function SettingsPage() {
                 <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">TodoMaster Ecosystem | Distributed SaaS Build 2.0.4-stable</p>
             </div>
         </div>
-    );
     );
 }

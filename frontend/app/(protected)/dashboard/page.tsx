@@ -9,7 +9,8 @@ import {
     Target,
     ArrowUpRight,
     TrendingUp,
-    Flame
+    Flame,
+    Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -22,89 +23,103 @@ export default function DashboardPage() {
     }, [fetchTasks]);
 
     const stats = [
-        { label: "Total Tasks", value: tasks.length, icon: Target, color: "text-primary-400", bg: "bg-primary-950/20" },
-        { label: "Completed", value: tasks.filter(t => t.status === 'completed').length, icon: CheckCircle2, color: "text-emerald-400", bg: "bg-emerald-950/20" },
-        { label: "In Progress", value: tasks.filter(t => t.status === 'in_progress').length, icon: Clock, color: "text-primary-400", bg: "bg-primary-950/20" },
-        { label: "Current Streak", value: "12", icon: Flame, color: "text-orange-400", bg: "bg-orange-950/20" },
+        { label: "Total Tasks", value: tasks.length, icon: Target, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+        { label: "Completed", value: tasks.filter(t => t.status === 'completed').length, icon: CheckCircle2, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+        { label: "In Progress", value: tasks.filter(t => t.status === 'in_progress').length, icon: Clock, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+        { label: "Current Streak", value: "12", icon: Flame, color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
     ];
 
     return (
-        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            {/* Welcome Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <div className="flex items-center space-x-2 mb-4">
-                        <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
-                        <span className="text-[10px] font-black text-primary-100/40 uppercase tracking-[0.2em] italic">System Status: Operational</span>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse shadow-[0_0_10px_#3b82f6]"></div>
+                        <span className="text-[10px] font-bold text-primary-400/60 uppercase tracking-[0.2em]">Neural Link Established</span>
                     </div>
-                    <h1 className="text-5xl font-black text-white tracking-tighter leading-none mb-4 italic">
-                        Workspace <span className="text-primary-500/50">Insights.</span>
+                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                        Command <span className="text-transparent bg-clip-text bg-main-gradient">Center.</span>
                     </h1>
-                    <p className="text-primary-100/40 font-medium text-lg tracking-tight">Your productivity overview and core performance metrics.</p>
                 </div>
 
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center gap-3">
+                    <Link href="/tasks">
+                        <button className="px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl font-bold transition-all flex items-center gap-2 backdrop-blur-md">
+                            View All Tasks
+                        </button>
+                    </Link>
                     <Link href="/tasks/new">
-                        <button className="premium-button bg-primary-600 text-white hover:bg-primary-500 flex items-center space-x-3 py-4 px-10 shadow-mist-premium group italic">
-                            <Zap className="w-4 h-4 text-primary-300 fill-current group-hover:scale-125 transition-transform" />
-                            <span>New Entry</span>
+                        <button className="px-6 py-3 bg-main-gradient text-white rounded-xl font-bold shadow-neon hover:shadow-neon-premium transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                            <Zap className="w-4 h-4 fill-current" />
+                            New Entry
                         </button>
                     </Link>
                 </div>
             </div>
 
-            {/* Stats Quick View */}
+            {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((s, i) => (
-                    <div key={i} className="glass-card p-8 rounded-[2.5rem] group hover:scale-[1.02] transition-all cursor-pointer border-primary-500/10 relative overflow-hidden !bg-surface-card">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+                    <div key={i} className="group relative p-6 rounded-2xl bg-surface-card border border-white/[0.08] hover:border-white/[0.15] transition-all cursor-pointer overflow-hidden backdrop-blur-xl">
+                        <div className="absolute inset-0 bg-main-gradient opacity-0 group-hover:opacity-[0.05] transition-opacity"></div>
                         <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-6">
-                                <div className={`w-14 h-14 ${s.bg} rounded-2xl flex items-center justify-center shadow-sm border border-primary-500/10`}>
-                                    <s.icon className={`w-7 h-7 ${s.color}`} />
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={`w-12 h-12 ${s.bg} rounded-xl flex items-center justify-center border ${s.border} shadow-inner`}>
+                                    <s.icon className={`w-6 h-6 ${s.color}`} />
                                 </div>
-                                <ArrowUpRight className="w-5 h-5 text-primary-100/20 group-hover:text-primary-500 transition-colors" />
+                                <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/40 transition-colors" />
                             </div>
-                            <p className="text-primary-100/30 text-[10px] font-black uppercase tracking-[0.2em] mb-1 italic">{s.label}</p>
-                            <h3 className="text-4xl font-black text-white tracking-tighter italic">{s.value}</h3>
+                            <p className="text-[10px] font-bold text-secondary-text uppercase tracking-widest mb-1">{s.label}</p>
+                            <h3 className="text-3xl font-black text-white tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-main-gradient transition-all">{s.value}</h3>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
-                {/* Productivity Chart */}
-                <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Chart Section */}
+                <div className="lg:col-span-2 p-8 rounded-2xl bg-surface-card border border-white/[0.08] backdrop-blur-xl shadow-neon-glow">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 className="text-xl font-bold text-white">Productivity Velocity</h3>
+                            <p className="text-sm text-secondary-text">Output frequency over the last 7 cycles.</p>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                            <TrendingUp className="w-3 h-3 text-emerald-400" />
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">+12.5%</span>
+                        </div>
+                    </div>
                     <ProductivityChart />
                 </div>
 
-                {/* Right Sidebar - Logic & Promo */}
-                <div className="space-y-8">
-                    <div className="glass-card !bg-surface-dark border-primary-500/20 rounded-[3rem] p-10 text-white relative overflow-hidden shadow-mist-premium group">
-                        <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary-600/10 rounded-full blur-[100px] group-hover:scale-125 transition-transform duration-1000"></div>
+                {/* Sidebar Cards */}
+                <div className="space-y-6">
+                    <div className="p-8 rounded-2xl bg-main-gradient relative overflow-hidden group shadow-neon-premium cursor-pointer">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
                         <div className="relative z-10">
-                            <div className="w-12 h-12 bg-primary-500/10 rounded-2xl flex items-center justify-center mb-10 border border-primary-500/20">
-                                <TrendingUp className="w-6 h-6 text-primary-400" />
+                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-6 border border-white/20">
+                                <Sparkles className="w-5 h-5 text-white" />
                             </div>
-                            <h3 className="text-2xl font-black mb-4 tracking-tighter italic">Pro Ecosystem.</h3>
-                            <p className="text-primary-100/40 text-sm font-medium mb-10 leading-relaxed italic">Ignite your potential with global sync and AI-driven workflow engines.</p>
-                            <button className="w-full py-4 bg-primary-600 hover:bg-primary-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl active:scale-95 italic">Upgrade Workflow</button>
+                            <h3 className="text-xl font-black text-white mb-2 tracking-tight">AI Copilot Pro</h3>
+                            <p className="text-white/80 text-sm mb-6 leading-relaxed">Unlock advanced neural tasking and unlimited inference cycles.</p>
+                            <button className="w-full py-3 bg-white text-primary-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl active:scale-95">Upgrade Now</button>
                         </div>
                     </div>
 
-                    <div className="glass-card !bg-surface-card border-primary-500/10 rounded-[3rem] p-10 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary-500/5 -mr-12 -mt-12 rounded-full"></div>
-                        <h3 className="font-black text-white mb-8 tracking-tighter text-xl relative z-10 italic uppercase">Core Targets.</h3>
-                        <div className="space-y-5 relative z-10">
+                    <div className="p-8 rounded-2xl bg-surface-card border border-white/[0.08] backdrop-blur-xl shadow-neon-glow">
+                        <h3 className="font-bold text-white mb-6 text-lg">Upcoming Priorities</h3>
+                        <div className="space-y-4">
                             {[
-                                { title: "Executive Review: TodoMaster v2.0", time: "High Focus" },
-                                { title: "Strategic Resource Management", time: "Critical Path" },
+                                { title: "Executive Review: v2.0", type: "Critical", color: "bg-rose-500", shadow: "shadow-rose-500/40" },
+                                { title: "Neural Link Integration", type: "High", color: "bg-blue-500", shadow: "shadow-blue-500/40" },
+                                { title: "Workspace Optimization", type: "Medium", color: "bg-amber-500", shadow: "shadow-amber-500/40" },
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center space-x-4 p-4 bg-primary-500/5 rounded-2xl border border-primary-500/10 hover:border-primary-500/30 hover:bg-primary-500/10 transition-all cursor-pointer group">
-                                    <div className="w-3 h-3 rounded-full bg-primary-600 shadow-[0_0_12px_rgba(16,185,129,0.5)]"></div>
-                                    <div>
-                                        <p className="text-xs font-black text-primary-100 line-clamp-1 truncate italic">{item.title}</p>
-                                        <p className="text-[10px] text-primary-100/30 font-black uppercase tracking-widest mt-0.5 italic">{item.time}</p>
+                                <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] rounded-xl border border-white/[0.05] hover:border-white/[0.1] transition-all cursor-pointer group hover:bg-white/[0.05]">
+                                    <div className={`w-1.5 h-8 rounded-full ${item.color} ${item.shadow} shadow-[0_0_8px] opacity-40 group-hover:opacity-100 transition-opacity`}></div>
+                                    <div className="flex-grow">
+                                        <p className="text-sm font-bold text-white mb-0.5 group-hover:text-primary-400 transition-colors">{item.title}</p>
+                                        <p className="text-[10px] text-secondary-text font-bold uppercase tracking-widest">{item.type} Priority</p>
                                     </div>
                                 </div>
                             ))}
@@ -113,5 +128,7 @@ export default function DashboardPage() {
                 </div>
             </div>
         </div>
+    );
+}
     );
 }

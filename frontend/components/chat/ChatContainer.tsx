@@ -72,11 +72,11 @@ const ChatContainer: React.FC = () => {
     }, [user, conversationId]);
 
     return (
-        <div className="flex flex-col h-[70vh] max-w-4xl mx-auto glass-card overflow-hidden">
+        <div className="flex flex-col h-[75vh] max-w-4xl mx-auto bg-surface-card backdrop-blur-xl border border-white/[0.05] rounded-[2.5rem] overflow-hidden shadow-neon-glow-soft">
             {/* Chat Header */}
-            <div className="px-8 py-6 border-b border-primary-500/10 bg-surface-dark/80 backdrop-blur-xl">
-                <h2 className="text-xl font-black text-white italic tracking-tighter uppercase">AI <span className="text-primary-500">Operative</span></h2>
-                <p className="text-[10px] uppercase tracking-[0.2em] font-black text-primary-400 opacity-60">Neural Network Active</p>
+            <div className="px-8 py-6 border-b border-white/[0.05] bg-white/[0.02]">
+                <h2 className="text-xl font-black text-white tracking-tighter uppercase leading-none">Command <span className="text-transparent bg-clip-text bg-main-gradient">Interface.</span></h2>
+                <p className="text-[10px] uppercase tracking-[0.2em] font-black text-primary-400 mt-1 opacity-60">Neural Network Active</p>
             </div>
 
             {/* Messages Area */}

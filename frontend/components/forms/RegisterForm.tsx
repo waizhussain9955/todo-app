@@ -61,19 +61,19 @@ export function RegisterForm() {
   const isDark = theme === 'dark';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       {error && (
-        <div className="p-4 text-xs font-black uppercase tracking-widest border border-red-500/20 bg-red-500/5 text-red-500 rounded-xl animate-pulse italic">
-          !! Error: {error}
+        <div className="p-4 text-xs font-bold uppercase tracking-widest border border-red-500/20 bg-red-500/5 text-red-500 rounded-xl animate-pulse">
+          Error: {error}
         </div>
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-50/30 ml-1 italic">Operative Codename</Label>
+        <Label htmlFor="name" className="text-[11px] font-bold uppercase tracking-wider text-secondary-text ml-1">Full Name</Label>
         <Input
           id="name"
           type="text"
-          placeholder="Identity Label"
+          placeholder="John Doe"
           className="premium-input w-full"
           autoComplete="name"
           disabled={isLoading}
@@ -82,24 +82,24 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-50/30 ml-1 italic">Network Endpoint</Label>
+        <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-secondary-text ml-1">Email Address</Label>
         <Input
           id="email"
           type="email"
-          placeholder="id@network.com"
+          placeholder="name@company.com"
           className="premium-input w-full"
           autoComplete="email"
           disabled={isLoading}
           {...register("email")}
         />
         {errors.email && (
-          <p className="text-[10px] text-red-500 font-bold ml-1 italic uppercase tracking-wider">{errors.email.message}</p>
+          <p className="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{errors.email.message}</p>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-50/30 ml-1 italic">Identity Logic</Label>
+          <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-wider text-secondary-text ml-1">Password</Label>
           <Input
             id="password"
             type="password"
@@ -110,12 +110,12 @@ export function RegisterForm() {
             {...register("password")}
           />
           {errors.password && (
-            <p className="text-[10px] text-red-500 font-bold ml-1 italic uppercase tracking-wider">{errors.password.message}</p>
+            <p className="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{errors.password.message}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-50/30 ml-1 italic">Verification</Label>
+          <Label htmlFor="confirmPassword" className="text-[11px] font-bold uppercase tracking-wider text-secondary-text ml-1">Confirm</Label>
           <Input
             id="confirmPassword"
             type="password"
@@ -126,19 +126,19 @@ export function RegisterForm() {
             {...register("confirmPassword")}
           />
           {errors.confirmPassword && (
-            <p className="text-[10px] text-red-500 font-bold ml-1 italic uppercase tracking-wider">{errors.confirmPassword.message}</p>
+            <p className="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{errors.confirmPassword.message}</p>
           )}
         </div>
       </div>
 
-      <Button type="submit" className="premium-button w-full bg-primary-500 text-white hover:bg-primary-400 mt-4" disabled={isLoading}>
+      <Button type="submit" className="premium-button w-full bg-main-gradient text-white shadow-neon-glow hover:opacity-90 py-6 mt-4" disabled={isLoading}>
         {isLoading ? (
           <div className="flex items-center justify-center space-x-2">
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></span>
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
           </div>
-        ) : "Initialize Operative Profile"}
+        ) : "Create Account"}
       </Button>
     </form>
   );

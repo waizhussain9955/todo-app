@@ -8,11 +8,12 @@ import Link from "next/link";
 import { useTasks } from "@/hooks/useTasks";
 import { TaskList } from "@/components/tasks/TaskList";
 import { TaskFilter } from "@/components/tasks/TaskFilter";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/Modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Plus, Trash2, Edit3, Check, Filter, LayoutGrid, List } from "lucide-react";
 import type { TaskFilters, TaskStatus, TaskPriority } from "@/types/task";
+import { formatDate } from "@/lib/utils";
 
 export default function TasksPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function TasksPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
 
   useEffect(() => {
     fetchTasks();
@@ -45,11 +47,9 @@ export default function TasksPage() {
 
       setCompletingId(id);
       try {
-        const updatedTask = await updateTask(id, { status: newStatus });
-        // Optimistic update already handled in hook
+        await updateTask(id, { status: newStatus });
       } catch (err) {
         console.error("Failed to toggle task:", err);
-        // Revert would happen here if we tracked previous state
       } finally {
         setCompletingId(null);
       }
@@ -78,13 +78,7 @@ export default function TasksPage() {
   }, [taskToDelete, deleteTask]);
 
   const handleFilterChange = useCallback(
-    async (filters: {
-      search?: string;
-      status?: TaskStatus;
-      priority?: TaskPriority;
-      sortBy?: string;
-      dueDate?: string;
-    }) => {
+    async (filters: any) => {
       await fetchTasks(filters as TaskFilters);
     },
     [fetchTasks]
@@ -98,174 +92,180 @@ export default function TasksPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="w-12 h-12 text-red-500 mx-auto mb-4">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
+        <div className="text-center p-12 rounded-3xl bg-white/5 border border-white/5">
+          <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Trash2 className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Something went wrong</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={() => fetchTasks()}>Try again</Button>
+          <h3 className="text-2xl font-bold text-white mb-2">Sync Error</h3>
+          <p className="text-secondary-text mb-8">{error}</p>
+          <button 
+            onClick={() => fetchTasks()}
+            className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all"
+          >
+            Retry Connection
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 pb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 relative">
-      {/* Vercel-style Background Grid */}
-      <div className="absolute inset-x-0 -top-24 h-96 opacity-[0.03] pointer-events-none -z-10" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
-
-      {/* Page Heading */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 relative z-10">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
         <div>
-          <div className="flex items-center space-x-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">Neural Workspace Active</span>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2 h-2 rounded-full bg-primary-500 shadow-neon animate-pulse"></div>
+            <span className="text-[10px] font-black text-primary-400 uppercase tracking-[0.2em]">Workspace Terminal</span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter leading-none mb-4 italic">Core <span className="text-primary-500/50">Engine.</span></h1>
-          <p className="text-primary-100/40 font-medium text-lg tracking-tight">Managing <span className="text-primary-400 font-black">{tasks.length}</span> active vectors in your current workflow.</p>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
+            Task <span className="text-transparent bg-clip-text bg-main-gradient">Repository.</span>
+          </h1>
+          <p className="text-secondary-text mt-4 text-sm font-medium opacity-80">Synchronizing {tasks.length} active process vectors in your current deployment cycle.</p>
         </div>
 
         <div className="flex items-center gap-4">
+          <div className="flex items-center bg-white/[0.03] border border-white/5 rounded-2xl p-1.5 backdrop-blur-md">
+            <button 
+                onClick={() => setViewMode("kanban")}
+                className={`p-2.5 rounded-xl transition-all duration-300 ${viewMode === "kanban" ? "bg-white/10 text-white shadow-inner" : "text-white/30 hover:text-white"}`}
+            >
+                <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button 
+                onClick={() => setViewMode("list")}
+                className={`p-2.5 rounded-xl transition-all duration-300 ${viewMode === "list" ? "bg-white/10 text-white shadow-inner" : "text-white/30 hover:text-white"}`}
+            >
+                <List className="w-4 h-4" />
+            </button>
+          </div>
           <Link href="/tasks/new">
-            <button className="premium-button bg-primary-600 text-white hover:bg-primary-500 flex items-center space-x-3 py-4 px-10 shadow-mist-premium group">
-              <svg className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-              <span>Add Vector</span>
+            <button className="px-8 py-4 bg-main-gradient text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-neon hover:shadow-neon-premium transition-all flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+              <Plus className="w-4 h-4" />
+              New Entry
             </button>
           </Link>
         </div>
       </div>
 
-      <div className="relative z-10">
+      {/* Filters */}
+      <div className="bg-surface-card backdrop-blur-xl border border-white/[0.05] p-6 rounded-[2rem] shadow-neon-glow-soft">
         <TaskFilter onFilterChange={handleFilterChange} onClearFilters={handleClearFilters} />
       </div>
 
       {isLoading && tasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 space-y-6">
+        <div className="flex flex-col items-center justify-center py-32 space-y-4">
           <LoadingSpinner size="lg" />
-          <p className="text-slate-400 font-medium animate-pulse tracking-widest uppercase text-[10px]">Syncing Workspace Core...</p>
+          <p className="text-xs font-bold text-secondary-text uppercase tracking-widest animate-pulse">Syncing Workspace...</p>
         </div>
       ) : tasks.length === 0 ? (
-        <div className="glass-card p-20 text-center max-w-2xl mx-auto mt-12 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-0 bg-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-          <div className="relative z-10">
-            <div className="w-24 h-24 bg-primary-950/20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner border border-primary-500/10">
-              <svg className="w-12 h-12 text-primary-500/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+        <div className="p-20 text-center rounded-3xl bg-white/5 border border-white/5 border-dashed">
+            <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <Filter className="w-10 h-10 text-white/10" />
             </div>
-            <h3 className="text-3xl font-black text-white mb-4 tracking-tighter italic uppercase">Workspace Empty.</h3>
-            <p className="text-primary-100/40 mb-10 text-lg font-medium leading-relaxed max-w-md mx-auto">Your neural engine is clear. Initialize your first strategic task to begin the cycle.</p>
-            <Link href="/tasks/new">
-              <button className="premium-button bg-primary-600 text-white shadow-mist-premium px-12 italic">Initialize Task α</button>
-            </Link>
-          </div>
+            <h3 className="text-2xl font-bold text-white mb-2">No Vectors Found</h3>
+            <p className="text-secondary-text mb-8">Your current filter parameters yielded zero results.</p>
+            <button 
+                onClick={handleClearFilters}
+                className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all"
+            >
+                Reset Filters
+            </button>
         </div>
-      ) : (
-        <div className="flex lg:grid lg:grid-cols-3 gap-8 overflow-x-auto lg:overflow-visible pb-12 snap-x snap-mandatory -mx-4 px-4 lg:mx-0 lg:px-0 scrollbar-hide relative z-10">
+      ) : viewMode === "kanban" ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
           {/* Kanban Columns */}
           {[
-            { id: "pending", label: "Registry", color: "bg-slate-400", count: tasks.filter(t => t.status === 'pending').length },
-            { id: "in_progress", label: "Active", color: "bg-primary-500", count: tasks.filter(t => t.status === 'in_progress').length },
-            { id: "completed", label: "Archive", color: "bg-green-500", count: tasks.filter(t => t.status === 'completed').length }
+            { id: "pending", label: "Backlog", color: "bg-slate-500", count: tasks.filter(t => t.status === 'pending').length },
+            { id: "in_progress", label: "Active", color: "bg-blue-500", count: tasks.filter(t => t.status === 'in_progress').length },
+            { id: "completed", label: "Archived", color: "bg-emerald-500", count: tasks.filter(t => t.status === 'completed').length }
           ].map((column) => (
-            <div key={column.id} className="flex flex-col space-y-6 min-h-[600px] min-w-[85vw] md:min-w-[420px] lg:min-w-0 snap-center">
-              <div className="flex items-center justify-between px-4 mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${column.color} shadow-[0_0_15px_rgba(16,185,129,0.3)]`}></div>
-                  <h3 className="font-black text-primary-100 uppercase tracking-[0.2em] text-[10px] italic">{column.label}</h3>
-                  <span className="bg-primary-500/10 text-primary-400 text-[10px] px-2.5 py-0.5 rounded-full font-black italic border border-primary-500/20">{column.count}</span>
+            <div key={column.id} className="space-y-6">
+              <div className="flex items-center justify-between px-2 mb-2">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${column.color}`}></div>
+                  <h3 className="text-xs font-black text-white uppercase tracking-widest">{column.label}</h3>
+                  <span className="text-[10px] px-2 py-0.5 bg-white/5 border border-white/5 rounded-full text-secondary-text font-bold">
+                    {column.count}
+                  </span>
                 </div>
-                <button className="p-2 hover:bg-primary-500/5 rounded-xl text-primary-100/20 hover:text-primary-400 transition-all">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
-                </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {tasks.filter(t => t.status === column.id).map((task) => (
-                  <div key={task.id} className="group glass-card p-6 !bg-surface-card hover:scale-[1.02] hover:shadow-mist-premium transition-all border-primary-500/10 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary-500/5 -mr-12 -mt-12 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
-
+                  <div key={task.id} className="group relative p-7 rounded-[1.5rem] bg-surface-card backdrop-blur-xl border border-white/[0.05] hover:border-primary-500/30 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-neon-glow-soft">
+                    <div className="absolute inset-0 bg-main-gradient opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500"></div>
+                    
                     <div className="relative z-10">
-                      <div className="flex justify-between items-start mb-6">
-                        <span className={`text-[9px] px-3 py-1 rounded-full font-black uppercase tracking-[0.15em] italic ${task.priority === 'high' ? 'bg-red-950/30 text-red-500 border border-red-900/20' :
-                          task.priority === 'medium' ? 'bg-orange-950/30 text-orange-500 border border-orange-900/20' :
-                            'bg-primary-950/30 text-primary-400 border border-primary-900/20'
-                          }`}>
-                          {task.priority} Focus
-                        </span>
-                        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 transition-transform">
-                          <button onClick={() => router.push(`/tasks/${task.id}`)} className="p-2 hover:bg-primary-500/10 rounded-xl text-primary-100/20 hover:text-primary-400 transition-all">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                          </button>
-                          <button onClick={() => handleDeleteClick(task.id)} className="p-2 hover:bg-red-500/10 rounded-xl text-primary-100/20 hover:text-red-500 transition-all">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                          </button>
-                        </div>
-                      </div>
-
-                      <h4 className="font-black text-white mb-2 leading-[1.3] text-lg tracking-tighter group-hover:text-primary-400 transition-colors italic">{task.title}</h4>
-                      {task.category && (
-                        <div className="mb-2">
-                          <span className="text-[9px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider bg-primary-500/10 text-primary-400 border border-primary-500/20">
-                            {task.category.name}
-                          </span>
-                        </div>
-                      )}
-                      {task.description && (
-                        <p className="text-sm font-medium text-primary-100/30 line-clamp-2 mb-6 leading-relaxed italic">{task.description}</p>
-                      )}
-
-                      {/* Premium Progress Tracking */}
-                      <div className="mb-6">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[9px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest italic">Sync Progress</span>
-                          <span className="text-[9px] font-black text-primary-500 italic">
-                            {task.status === 'completed' ? '100%' : '60%'}
-                          </span>
-                        </div>
-                        <div className="h-1 w-full bg-slate-50 dark:bg-slate-800 rounded-full overflow-hidden">
-                          <div className={`h-full bg-primary-500 dark:bg-primary-600 rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(99,102,241,0.3)] ${task.status === 'completed' ? 'w-full' : 'w-2/3 group-hover:w-[75%]'}`}></div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-6 border-t border-primary-500/10">
-                        <div className="flex items-center space-x-2 text-primary-100/20">
-                          <svg className="w-4 h-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                          <span className="text-[10px] font-black uppercase tracking-widest italic">Jan 27 '26</span>
+                        <div className="flex justify-between items-start mb-5">
+                            <span className={`text-[9px] px-2.5 py-1 rounded-lg font-black uppercase tracking-[0.15em] border ${
+                                task.priority === 'high' ? 'text-rose-400 border-rose-400/20 bg-rose-400/5' :
+                                task.priority === 'medium' ? 'text-amber-400 border-amber-400/20 bg-amber-400/5' :
+                                'text-blue-400 border-blue-400/20 bg-blue-400/5'
+                            }`}>
+                                {task.priority}
+                            </span>
+                            <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                                <button onClick={() => router.push(`/tasks/${task.id}`)} className="p-2 hover:bg-white/10 rounded-xl text-white/40 hover:text-white transition-all">
+                                    <Edit3 className="w-4 h-4" />
+                                </button>
+                                <button onClick={() => handleDeleteClick(task.id)} className="p-2 hover:bg-rose-500/10 rounded-xl text-white/40 hover:text-rose-500 transition-all">
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
 
-                        <button
-                          onClick={() => handleToggleComplete(task.id)}
-                          className={`w-9 h-9 rounded-2xl flex items-center justify-center transition-all ${task.status === 'completed'
-                            ? 'bg-primary-600 text-white shadow-mist-glow'
-                            : 'bg-primary-500/5 text-primary-100/20 hover:bg-primary-500/20 hover:text-primary-400 border border-primary-500/10'
-                            }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                        </button>
-                      </div>
+                        <h4 className="text-lg text-white font-black mb-2 tracking-tight group-hover:text-primary-400 transition-colors truncate">{task.title}</h4>
+                        
+                        {task.description && (
+                            <p className="text-xs text-secondary-text line-clamp-2 mb-4 leading-relaxed">{task.description}</p>
+                        )}
+
+                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                            <span className="text-[10px] font-bold text-secondary-text uppercase tracking-widest">
+                                {formatDate(task.dueDate || task.createdAt)}
+                            </span>
+                            <button 
+                                onClick={() => handleToggleComplete(task.id)}
+                                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                                    task.status === 'completed' 
+                                    ? 'bg-emerald-500 text-white' 
+                                    : 'bg-white/5 text-white/20 hover:bg-primary-500/10 hover:text-primary-400 border border-white/5'
+                                }`}
+                            >
+                                <Check className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
                     {completingId === task.id && (
-                      <div className="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm rounded-[2rem] flex items-center justify-center z-20">
+                      <div className="absolute inset-0 bg-surface-dark/60 backdrop-blur-sm flex items-center justify-center z-20">
                         <LoadingSpinner size="sm" />
                       </div>
                     )}
                   </div>
                 ))}
-
-                <button className="w-full py-8 border-2 border-dashed border-primary-500/5 rounded-[2rem] text-primary-100/10 hover:border-primary-500/20 hover:bg-primary-500/5 hover:text-primary-400 transition-all font-black text-[10px] uppercase tracking-[0.25em] flex items-center justify-center space-x-3 group italic shadow-sm hover:shadow-mist">
-                  <svg className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
-                  <span>Queue Integration</span>
+                
+                <button 
+                    onClick={() => router.push("/tasks/new")}
+                    className="w-full py-4 rounded-2xl border-2 border-dashed border-white/5 text-white/10 hover:border-white/10 hover:bg-white/[0.02] hover:text-white/40 transition-all text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2"
+                >
+                    <Plus className="w-3.5 h-3.5" />
+                    New Integration
                 </button>
               </div>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="pb-12">
+            <TaskList 
+                tasks={tasks} 
+                isLoading={isLoading} 
+                onToggleComplete={handleToggleComplete} 
+                onDelete={handleDeleteClick} 
+                viewMode="list" 
+                completingId={completingId}
+            />
         </div>
       )}
 
@@ -277,7 +277,7 @@ export default function TasksPage() {
         }}
         onConfirm={confirmDelete}
         title="Purge Vector"
-        message="Initiate permanent deletion of this strategic data point? This action bypasses the neural archive."
+        message="Are you sure you want to permanently delete this task from the workspace core?"
         confirmLabel="Initiate Purge"
         variant="danger"
         isLoading={!!deletingId}

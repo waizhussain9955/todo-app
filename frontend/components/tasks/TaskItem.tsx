@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Task } from "@/types/task";
-import { formatDate, getPriorityColor, getStatusColor } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { Trash2, Calendar, Hash } from "lucide-react";
 
 interface TaskItemProps {
   task: Task;
@@ -18,47 +21,62 @@ export function TaskItem({
 }: TaskItemProps) {
   const isCompleted = task.status === "completed";
 
+  const priorityColors = {
+    high: "text-rose-400 bg-rose-400/10",
+    medium: "text-amber-400 bg-amber-400/10",
+    low: "text-blue-400 bg-blue-400/10",
+  };
+
   return (
     <div
-      className={`group flex items-center gap-4 p-4 rounded-2xl border transition-all ${isCompleted
-        ? "bg-slate-50/50 border-slate-100 opacity-80"
-        : "bg-white border-slate-100 hover:border-primary-100 hover:shadow-md"
-        }`}
+      className={`group flex items-center gap-6 p-5 rounded-[1.25rem] border border-white/[0.05] transition-all duration-300 shadow-sm ${
+        isCompleted ? "opacity-50 bg-white/[0.02]" : "bg-surface-card backdrop-blur-xl hover:border-primary-500/30 hover:shadow-neon-glow-soft"
+      }`}
     >
       <Checkbox
         checked={isCompleted}
         onChange={() => onToggleComplete(task.id)}
         disabled={isCompleting}
-        className="w-5 h-5 rounded-lg border-2 border-slate-200 checked:bg-green-500 checked:border-green-500 transition-all"
+        className="w-5 h-5 rounded-lg border-white/10 checked:bg-primary-500 checked:border-primary-500"
       />
+      
       <div className="flex-1 min-w-0">
         <Link href={`/tasks/${task.id}`}>
-          <h3 className={`font-bold transition-colors group-hover:text-primary-600 truncate ${isCompleted ? "text-slate-400 line-through" : "text-slate-800"}`}>
+          <h3 className={`font-bold transition-colors truncate ${
+            isCompleted ? "text-secondary-text line-through" : "text-white group-hover:text-primary-400"
+          }`}>
             {task.title}
           </h3>
         </Link>
-        <div className="flex items-center space-x-3 mt-1">
-          <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-wider ${task.priority === 'high' ? 'bg-red-50 text-red-600' :
-            task.priority === 'medium' ? 'bg-orange-50 text-orange-600' :
-              'bg-blue-50 text-blue-600'
-            }`}>
+        <div className="flex items-center gap-4 mt-1">
+          <span className={`text-[9px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest ${
+            priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.low
+          }`}>
             {task.priority}
           </span>
           {task.category && (
-            <span className="text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-wider bg-slate-100 text-slate-500">
-              {task.category.name}
-            </span>
+            <div className="flex items-center gap-1 text-secondary-text">
+                <Hash className="w-3 h-3" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">
+                    {task.category.name}
+                </span>
+            </div>
           )}
-          <div className="h-1 w-1 bg-slate-200 rounded-full"></div>
-          <span className="text-[10px] font-bold text-slate-400">{formatDate(task.dueDate || task.createdAt)}</span>
+          <div className="flex items-center gap-1.5 text-secondary-text">
+            <Calendar className="w-3 h-3" />
+            <span className="text-[10px] font-bold uppercase tracking-widest">
+                {formatDate(task.dueDate || task.createdAt)}
+            </span>
+          </div>
         </div>
       </div>
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+
+      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => onDelete(task.id)}
-          className="p-2 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-600 transition-all"
+          className="p-2 hover:bg-rose-500/10 rounded-lg text-white/20 hover:text-rose-500 transition-all"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          <Trash2 className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -1,37 +1,41 @@
 // components/landing/Stats.tsx
 "use client";
 
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { Users, CheckCircle, Zap } from "lucide-react";
+import { Activity, Database, Globe } from "lucide-react";
 
 const Stats = () => {
   const stats = [
-    { icon: Users, label: "Network nodes", value: "10k+" },
-    { icon: CheckCircle, label: "Tasks Decrypted", value: "1M+" },
-    { icon: Zap, label: "Uptime Frequency", value: "99.9%" },
+    { icon: Globe, label: "Global Nodes", value: "24" },
+    { icon: Database, label: "Neural Vectors", value: "128M+" },
+    { icon: Activity, label: "Latency", value: "<15ms" },
   ];
 
   return (
-    <section className="py-24 md:py-48 px-4 bg-surface-dark_variant/30">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+    <section id="metrics" className="py-24 bg-[#0b0f19] border-y border-white/[0.05] relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+        <div className="absolute top-0 left-2/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+        <div className="absolute top-0 left-3/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div
                 key={index}
-                className="text-center p-12 rounded-[2rem] border border-primary-500/10 bg-surface-dark/40 shadow-mist hover:shadow-mist-premium hover:-translate-y-2 transition-all duration-500"
+                className="text-center group relative py-8"
               >
-                <div className="mb-6 inline-flex p-4 rounded-full bg-primary-500/10 border border-primary-500/20">
-                  <Icon className="w-8 h-8 text-primary-500" />
+                <div className="mb-8 inline-flex p-5 rounded-2xl bg-white/[0.03] border border-white/[0.05] group-hover:border-primary-500/40 transition-all duration-500 shadow-neon-glow-soft">
+                  <Icon className="w-10 h-10 text-white shadow-neon transition-all duration-500 group-hover:scale-110" />
                 </div>
-                <p className="text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-br from-primary-400 to-primary-600 tracking-tighter italic">
+                <div className="text-6xl md:text-7xl font-black mb-3 tracking-tighter text-transparent bg-clip-text bg-main-gradient">
                   {stat.value}
-                </p>
-                <p className="text-sm font-black text-primary-50/40 uppercase tracking-[0.3em] italic">
+                </div>
+                <div className="text-[10px] font-black text-primary-200/40 uppercase tracking-[0.3em]">
                   {stat.label}
-                </p>
+                </div>
               </div>
             );
           })}

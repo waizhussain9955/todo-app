@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Task } from "@/types/task";
 import { formatDate } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Trash2 } from "lucide-react";
+import { Trash2, Clock, Calendar, BarChart3 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,6 @@ export function TaskCard({
   isCompleting,
 }: TaskCardProps) {
   const isCompleted = task.status === "completed";
-  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,93 +30,90 @@ export function TaskCard({
 
   if (!mounted) return null;
 
-  const isDark = theme === 'dark';
-
-  const priorityStyles = {
-    high: 'bg-rose-50 text-rose-600 border-rose-100',
-    medium: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-    low: 'bg-slate-50 text-slate-600 border-slate-200',
+  const priorityColors = {
+    high: "text-rose-400 bg-rose-400/10 border-rose-400/20",
+    medium: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+    low: "text-blue-400 bg-blue-400/10 border-blue-400/20",
   };
 
   return (
     <div
-      className={`bg-white hover:bg-slate-50/50 border border-slate-200/60 p-8 rounded-[2rem] shadow-xl shadow-slate-200/30 transition-all duration-300 relative group ${isCompleted ? 'bg-slate-50 border-slate-200 opacity-70' : ''
-        }`}
+      className={`group relative p-7 rounded-[1.5rem] bg-surface-card backdrop-blur-xl border border-white/[0.05] hover:border-primary-500/30 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-neon-glow-soft ${
+        isCompleted ? "opacity-60" : ""
+      }`}
     >
-      {/* Card Mist Background */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -z-10 group-hover:bg-indigo-500/10 transition-all duration-700"></div>
-
-      <div className="flex justify-between items-start mb-6">
-        <span
-          className={`text-[9px] px-3 py-1.5 rounded-full font-black uppercase tracking-[0.2em] border italic ${priorityStyles[task.priority as keyof typeof priorityStyles] || priorityStyles.low
-            }`}
-        >
-          {task.priority} Priority
-        </span>
-        <Checkbox
-          checked={isCompleted}
-          onChange={() => onToggleComplete(task.id)}
-          disabled={isCompleting}
-          className="w-6 h-6 rounded-full border-slate-200 checked:bg-indigo-600 checked:border-indigo-600 transition-all duration-500"
-        />
-      </div>
-
-      <Link href={`/tasks/${task.id}`} className="block mb-4">
-        <h3
-          className={`font-semibold text-xl truncate transition-all duration-300 group-hover:text-indigo-600 ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-900'
-            }`}
-        >
-          {task.title}
-        </h3>
-      </Link>
-
-      {task.description && (
-        <p className={`text-sm line-clamp-2 mb-8 font-medium leading-relaxed ${isCompleted ? 'text-slate-400' : 'text-slate-600'
+      <div className="absolute inset-0 bg-main-gradient opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500"></div>
+      
+      <div className="relative z-10">
+        <div className="flex justify-between items-start mb-6">
+          <div className={`px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-widest ${
+            priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.low
           }`}>
-          {task.description}
-        </p>
-      )}
-
-      {/* Progress Matrix */}
-      <div className="mb-8 p-4 rounded-[1.5rem] bg-slate-50 border border-slate-100">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            Progress Track
-          </span>
-          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
-            {isCompleted ? '100% COMPLETE' : 'IN PROGRESS'}
-          </span>
-        </div>
-        <div className="h-2 w-full rounded-full bg-slate-200/50 overflow-hidden">
-          <div
-            className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-indigo-600 shadow-[0_0_12px_rgba(79,70,229,0.3)]' : 'bg-indigo-600/30'
-              }`}
-            style={{ width: isCompleted ? '100%' : '25%' }}
+            {task.priority} Priority
+          </div>
+          <Checkbox
+            checked={isCompleted}
+            onChange={() => onToggleComplete(task.id)}
+            disabled={isCompleting}
+            className="w-5 h-5 rounded-lg border-white/10 checked:bg-primary-500 checked:border-primary-500"
           />
         </div>
-      </div>
 
-      <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-auto">
-        <div className="flex items-center space-x-2 text-slate-400">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-[11px] font-bold uppercase tracking-wider">
-            {formatDate(task.dueDate || task.createdAt)}
-          </span>
+        <Link href={`/tasks/${task.id}`} className="block mb-3">
+          <h3 className={`text-xl font-bold transition-colors ${
+            isCompleted ? "text-secondary-text line-through" : "text-white group-hover:text-primary-400"
+          }`}>
+            {task.title}
+          </h3>
+        </Link>
+
+        {task.description && (
+          <p className="text-sm text-secondary-text line-clamp-2 mb-6 leading-relaxed">
+            {task.description}
+          </p>
+        )}
+
+        {/* Progress Section */}
+        <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/5">
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                    <BarChart3 className="w-3 h-3 text-secondary-text" />
+                    <span className="text-[10px] font-bold text-secondary-text uppercase tracking-widest">Status Matrix</span>
+                </div>
+                <span className={`text-[10px] font-bold uppercase tracking-widest ${isCompleted ? 'text-green-400' : 'text-primary-400'}`}>
+                    {isCompleted ? 'Verified' : 'Active'}
+                </span>
+            </div>
+            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                <div 
+                    className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'bg-main-gradient shadow-neon'}`}
+                    style={{ width: isCompleted ? '100%' : '35%' }}
+                />
+            </div>
         </div>
 
-        <button
-          onClick={() => onDelete(task.id)}
-          className="p-3 rounded-full hover:bg-rose-50 text-slate-300 hover:text-rose-500 transition-all duration-500 opacity-0 group-hover:opacity-100"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center justify-between pt-6 border-t border-white/5">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-secondary-text">
+                <Calendar className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-bold uppercase tracking-widest">
+                    {formatDate(task.dueDate || task.createdAt)}
+                </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => onDelete(task.id)}
+            className="p-2 text-white/20 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {isCompleting && (
-        <div className="absolute inset-0 flex items-center justify-center bg-surface-dark/80 backdrop-blur-sm z-10 transition-all">
-          <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center bg-surface-dark/60 backdrop-blur-sm z-20 transition-all">
+          <div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>

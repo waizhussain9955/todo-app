@@ -43,8 +43,10 @@ export default function NewTaskPage() {
         </Link>
       </div>
 
-      <div className="glass-card p-10 !shadow-mist-premium border-primary-500/20">
-        <h1 className="text-4xl font-black text-white mb-10 tracking-tighter italic uppercase">Initialize <span className="text-primary-500">Vector.</span></h1>
+      <div className="bg-surface-card backdrop-blur-xl p-8 md:p-12 border border-white/[0.08] rounded-[2rem] shadow-neon-glow">
+        <h1 className="text-4xl md:text-5xl font-black text-white mb-10 tracking-tighter">
+          Initialize <span className="text-transparent bg-clip-text bg-main-gradient">Vector.</span>
+        </h1>
         <TaskForm onSubmit={handleSubmit} isLoading={isLoading} />
       </div>
     </div>

@@ -1,57 +1,94 @@
 // components/landing/Features.tsx
 "use client";
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import { CheckCircle, Users, BarChart3 } from 'lucide-react';
+import { Brain, Zap, Shield, Rocket, Target, Cpu } from 'lucide-react';
 
 const Features = () => {
   const features = [
     {
-      icon: CheckCircle,
-      title: 'Neural Tasking',
-      description: 'Advanced heuristic categorization and strategic priority nodes for maximum output.',
+      icon: Brain,
+      title: 'Neural Engine',
+      description: 'Llama 3.1 70B powered task decomposition and strategic prioritization.',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
-      icon: Users,
-      title: 'Collective Sync',
-      description: 'Distributed network architecture allowing real-time collaborative task execution.',
+      icon: Zap,
+      title: 'Cerebras Speed',
+      description: 'Sub-second inference for real-time task generation and organization.',
+      color: 'from-purple-500 to-pink-500'
     },
     {
-      icon: BarChart3,
-      title: 'Temporal Matrix',
-      description: 'High-fidelity analytics and metric visualization of your productivity timeline.',
+      icon: Shield,
+      title: 'Enterprise Security',
+      description: 'Military-grade encryption for all your strategic roadmaps and data.',
+      color: 'from-orange-500 to-red-500'
     },
+    {
+      icon: Rocket,
+      title: 'Deployment Ready',
+      description: 'One-click migration from legacy systems to our neural protocol.',
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      icon: Target,
+      title: 'Precision Metrics',
+      description: 'High-fidelity analytics to track your productivity velocity and scale.',
+      color: 'from-indigo-500 to-blue-500'
+    },
+    {
+      icon: Cpu,
+      title: 'Unified Core',
+      description: 'Seamlessly sync across all nodes in your distributed workspace.',
+      color: 'from-pink-500 to-rose-500'
+    }
   ];
 
   return (
-    <section className="py-24 md:py-48 px-4 bg-surface-dark relative overflow-hidden">
-      {/* Background Mist */}
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-[120px] -z-10"></div>
+    <section id="features" className="py-32 md:py-48 px-6 bg-[#0b0f19] relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-primary-500/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[20%] left-[10%] w-[30%] h-[30%] bg-secondary-500/5 rounded-full blur-[120px]"></div>
+      </div>
 
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-24 space-y-4">
-          <h2 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase">Protocol <span className="text-primary-500">Modules.</span></h2>
-          <p className="text-primary-50/40 font-medium text-lg tracking-widest uppercase">High performance task infrastructure</p>
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-24">
+          <h2 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-tight">
+            Engineered for <br />
+            <span className="text-transparent bg-clip-text bg-main-gradient">Extreme Productivity.</span>
+          </h2>
+          <p className="text-secondary-text max-w-3xl mx-auto text-xl font-medium opacity-80 leading-relaxed">
+            Experience the next generation of task management with our advanced AI-first infrastructure, built for teams that demand velocity.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div
                 key={index}
-                className="glass-card p-10 group hover:-translate-y-4 transition-all duration-700 animate-in fade-in zoom-in"
+                className="group relative p-10 rounded-[2rem] bg-surface-card backdrop-blur-xl border border-white/[0.05] hover:border-white/[0.1] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/40"
               >
-                <div className="mb-8 inline-flex p-4 rounded-2xl bg-primary-500/10 border border-primary-500/20 group-hover:bg-primary-500/20 transition-colors">
-                  <Icon className="w-10 h-10 text-primary-500" />
+                <div className="absolute inset-0 bg-main-gradient opacity-0 group-hover:opacity-[0.02] rounded-[2rem] transition-opacity duration-500"></div>
+                
+                <div className="relative mb-8">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-20 blur-xl rounded-full scale-0 group-hover:scale-100 transition-transform duration-500`}></div>
+                  <div className={`relative w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:bg-white/[0.05]`}>
+                    <Icon className="text-white w-full h-full" />
+                  </div>
                 </div>
-                <h3 className="text-2xl font-black mb-4 text-white italic tracking-tight uppercase">
+
+                <h3 className="text-2xl font-black mb-4 text-white tracking-tight">
                   {feature.title}
                 </h3>
-                <p className="text-primary-50/60 leading-relaxed font-medium">
+                <p className="text-secondary-text leading-relaxed font-medium opacity-70 group-hover:opacity-100 transition-opacity">
                   {feature.description}
                 </p>
+
+                <div className="mt-8 pt-8 border-t border-white/[0.05] flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-primary-400 transition-colors">
+                  System Module Active
+                </div>
               </div>
             );
           })}

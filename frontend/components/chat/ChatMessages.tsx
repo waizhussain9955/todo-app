@@ -31,8 +31,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
             ))}
 
             {isLoading && (
-                <div className="flex justify-start mb-4">
-                    <div className="bg-primary-950/20 border border-primary-500/10 rounded-2xl rounded-tl-none px-5 py-4 shadow-mist">
+                <div className="flex justify-start mb-6">
+                    <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.05] rounded-[1.5rem] rounded-tl-none px-6 py-4 shadow-neon-glow-soft">
                         <div className="flex space-x-2">
                             <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce"></div>
                             <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>

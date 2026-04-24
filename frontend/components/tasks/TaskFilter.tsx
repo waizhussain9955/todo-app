@@ -88,7 +88,7 @@ export function TaskFilter({ onFilterChange, onClearFilters }: TaskFilterProps) 
   const hasActiveFilters = search || status || priority || sortBy || dueDate;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+    <div className="w-full">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="col-span-1 sm:col-span-2 lg:col-span-1">
           <label htmlFor="search" className="sr-only">

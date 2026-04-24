@@ -20,20 +20,20 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading }) => {
     };
 
     return (
-        <div className="p-6 border-t border-primary-500/10 bg-surface-dark/80 backdrop-blur-xl rounded-b-2xl">
-            <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
+        <div className="p-8 border-t border-white/[0.05] bg-white/[0.02]">
+            <form onSubmit={handleSubmit} className="relative flex items-center gap-3">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask me anything about your tasks..."
+                    placeholder="Enter your query..."
                     disabled={isLoading}
-                    className="flex-1 bg-surface-dark border border-primary-900/40 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 transition-all duration-300 outline-none font-medium placeholder:text-slate-600 text-primary-50 disabled:opacity-50"
+                    className="flex-1 bg-white/[0.03] border border-white/[0.05] rounded-xl px-5 py-4 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500/50 transition-all duration-300 outline-none font-medium placeholder:text-slate-600 text-white disabled:opacity-50"
                 />
                 <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="p-3 bg-primary-600 hover:bg-primary-500 text-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
+                    className="p-4 bg-main-gradient hover:opacity-90 text-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-neon-glow transform active:scale-95"
                     aria-label="Send message"
                 >
                     <Send className="w-5 h-5" />

@@ -4,12 +4,18 @@ import { cn } from "@/lib/utils";
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: { value: string; label: string }[];
   error?: string;
+  label?: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, options, error, ...props }, ref) => {
+  ({ className, options, error, label, ...props }, ref) => {
     return (
-      <div className="w-full space-y-1.5">
+      <div className="w-full space-y-2">
+        {label && (
+          <label className="text-[10px] font-black text-secondary-text uppercase tracking-[0.2em] px-1">
+            {label}
+          </label>
+        )}
         <div className="relative group">
           <select
             ref={ref}
@@ -35,7 +41,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </div>
         </div>
         {error && (
-          <p className="mt-1 text-sm text-rose-500 font-medium px-2" role="alert">
+          <p className="mt-1 text-[10px] text-rose-500 font-black uppercase tracking-widest px-2 animate-in fade-in slide-in-from-top-1">
             {error}
           </p>
         )}

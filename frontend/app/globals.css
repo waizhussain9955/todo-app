@@ -4,12 +4,8 @@
 
 /* PREMIUM SAAS DARK INDIGO THEME */
 :root {
-  --foreground-rgb: 229, 231, 235; /* #e5e7eb */
-  --background-rgb: 11, 15, 25;   /* #0b0f19 */
-  --accent-blue: 59, 130, 246;     /* #3b82f6 */
-  --accent-purple: 139, 92, 246;   /* #8b5cf6 */
-  --card-bg: rgba(17, 24, 39, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --foreground-rgb: 229, 231, 235;
+  --background-rgb: 11, 15, 25;
 }
 
 @layer base {
@@ -26,29 +22,38 @@
 
   html {
     color-scheme: dark;
-    background-color: #0b0f19;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-surface-card backdrop-blur-xl border border-white/[0.08] shadow-neon-glow rounded-[1.25rem] overflow-hidden transition-all duration-300;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
 
   .premium-button {
-    @apply px-8 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-[1.02] active:scale-95 shadow-neon hover:shadow-neon-premium text-sm flex items-center justify-center gap-3 bg-main-gradient text-white;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
 
-  .premium-input {
-    @apply bg-slate-900/50 border border-white/[0.08] rounded-xl px-5 py-3 focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 transition-all duration-300 outline-none font-medium placeholder:text-muted-text text-primary-text w-full;
+  .premium-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-secondary-500 font-bold tracking-tight;
-  }
-
-  .premium-link {
-    @apply text-primary-400 hover:text-primary-300 transition-colors duration-300 underline underline-offset-4 decoration-primary-500/30 font-medium;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
@@ -68,25 +73,4 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(59, 130, 246, 0.4);
-}
-
-::selection {
-  @apply bg-primary-500/40 text-white;
-}
-
-/* Motion Utilities */
-.animate-mist {
-  animation: mist-flow 10s ease-in-out infinite alternate;
-}
-
-@keyframes mist-flow {
-  0% {
-    opacity: 0.3;
-    transform: translateY(0) scale(1);
-  }
-
-  100% {
-    opacity: 0.6;
-    transform: translateY(-10px) scale(1.05);
-  }
 }
